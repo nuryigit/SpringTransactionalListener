@@ -15,11 +15,10 @@ public class ExecutorConfig extends AsyncConfigurerSupport {
     @Override
     @Bean("asyncTaskExecutor")
     public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setThreadNamePrefix("contextAwareExecutor-");
-        executor.initialize();
-        return new ContextAwareExecutorDecorator(executor);
+        ThreadPoolTaskExecutor poolExecutor = new ThreadPoolTaskExecutor();
+        poolExecutor.setTaskDecorator(new ContextCopyingDecorator());
+        poolExecutor.initialize();
+        return poolExecutor;
     }
-
 
 }

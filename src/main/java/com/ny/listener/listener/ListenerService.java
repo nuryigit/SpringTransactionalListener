@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -54,8 +55,7 @@ public class ListenerService {
     public void startAsync() {
         System.out.println("started");
 
-        ContextAwareExecutorDecorator contextAwareExecutorDecorator = new ContextAwareExecutorDecorator(executor);
-        contextAwareExecutorDecorator.execute(this::emptyLoop);
+        executor.execute(this::emptyLoop);
 
 
         //pass without request
@@ -66,7 +66,6 @@ public class ListenerService {
         //TransactionCompletionManager.register(TransactionCompletionAdapter.afterCommit(this::emptyLoop));
     }
 
-    @Async
     public void emptyLoop() {
         try {
             Thread.sleep(2000);
@@ -77,7 +76,7 @@ public class ListenerService {
             System.out.println("i" + i);
         }
 
-
-        Collections.list(request.getHeaderNames()).forEach(header -> System.out.println(""+header + ", val : "+ request.getHeader(header)));
+        System.out.println(RequestContextHolder.getRequestAttributes());
+        MDC.getCopyOfContextMap().forEach((key, value) -> System.out.println(""+key + ", val : "+ value));
     }
 }
