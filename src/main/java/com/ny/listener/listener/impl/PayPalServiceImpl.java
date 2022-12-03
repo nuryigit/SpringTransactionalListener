@@ -1,6 +1,6 @@
 package com.ny.listener.listener.impl;
 
-import com.transaction.phase.listener.services.PaymentService;
+import com.ny.listener.listener.services.PaymentService;
 import org.springframework.stereotype.Service;
 
 @Service

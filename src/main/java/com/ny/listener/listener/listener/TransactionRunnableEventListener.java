@@ -1,12 +1,16 @@
 package com.ny.listener.listener.listener;
 
 
-import com.transaction.phase.listener.event.AfterCommitRunnableEvent;
-import com.transaction.phase.listener.event.AfterCompletionRunnableEvent;
-import com.transaction.phase.listener.event.AfterRollbackRunnableEvent;
-import com.transaction.phase.listener.event.BeforeCommitRunnableEvent;
+import com.ny.listener.listener.decorator.ContextAwareExecutorDecorator;
+import com.ny.listener.listener.event.AfterCommitRunnableEvent;
+import com.ny.listener.listener.event.AfterCompletionRunnableEvent;
+import com.ny.listener.listener.event.AfterRollbackRunnableEvent;
+import com.ny.listener.listener.event.BeforeCommitRunnableEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.objenesis.strategy.SingleInstantiatorStrategy;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,9 +18,13 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.annotation.Resource;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Component
 public class TransactionRunnableEventListener {
+
 
   protected final Logger logger = LogManager.getLogger(this.getClass());
   @Resource
@@ -54,7 +62,16 @@ public class TransactionRunnableEventListener {
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void runWithTransaction(Runnable runnable) {
-    runnable.run();
+
+    /*ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setThreadNamePrefix("contextAwareExecutor-");
+    executor.initialize();
+    ContextAwareExecutorDecorator contextAwareExecutorDecorator = new ContextAwareExecutorDecorator(executor);
+    contextAwareExecutorDecorator.execute(runnable);
+     */
+
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    executorService.submit(runnable);
   }
 
   @Transactional(readOnly = true)

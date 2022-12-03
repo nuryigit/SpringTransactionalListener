@@ -1,7 +1,7 @@
 package com.ny.listener.listener.config;
 
 
-import com.transaction.phase.listener.same.type.bean.CustomObjectMapper;
+import com.ny.listener.listener.same.type.bean.CustomObjectMapper;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;

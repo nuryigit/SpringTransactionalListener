@@ -1,6 +1,6 @@
 package com.ny.listener.listener;
 
-import com.transaction.phase.listener.same.type.bean.CustomObjectMapper;
+import com.ny.listener.listener.same.type.bean.CustomObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

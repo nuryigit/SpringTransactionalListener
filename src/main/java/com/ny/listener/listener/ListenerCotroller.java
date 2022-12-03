@@ -1,6 +1,6 @@
 package com.ny.listener.listener;
 
-import com.transaction.phase.listener.services.PaymentService;
+import com.ny.listener.listener.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +27,12 @@ public class ListenerCotroller {
   @GetMapping(value = "/deprecatedService")
   public ResponseEntity depracatedService()  {
     paymentService.pay();
+    return new ResponseEntity<>(HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/testAsync")
+  public ResponseEntity testAsync()  {
+    service.startAsync();
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
