@@ -66,6 +66,7 @@ public class ListenerService {
         //TransactionCompletionManager.register(TransactionCompletionAdapter.afterCommit(this::emptyLoop));
     }
 
+    @Async("contextAwareTaskExecutor")
     public void emptyLoop() {
         try {
             Thread.sleep(2000);

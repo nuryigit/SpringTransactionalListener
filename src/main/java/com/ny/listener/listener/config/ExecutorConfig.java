@@ -1,7 +1,6 @@
 package com.ny.listener.listener.config;
 
-import com.ny.listener.listener.decorator.ContextAwareExecutorDecorator;
-import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import com.ny.listener.listener.decorator.ContextCopyingDecorator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
@@ -15,10 +14,12 @@ public class ExecutorConfig extends AsyncConfigurerSupport {
     @Override
     @Bean("asyncTaskExecutor")
     public Executor getAsyncExecutor() {
-        ThreadPoolTaskExecutor poolExecutor = new ThreadPoolTaskExecutor();
-        poolExecutor.setTaskDecorator(new ContextCopyingDecorator());
-        poolExecutor.initialize();
-        return poolExecutor;
+        ContextAwarePoolExecutor taskExecutor = new ContextAwarePoolExecutor();
+        taskExecutor.setMaxPoolSize(20);
+        taskExecutor.setCorePoolSize(5);
+        taskExecutor.setQueueCapacity(100);
+        taskExecutor.setThreadNamePrefix("ContextAwareExecutor-");
+        return taskExecutor;
     }
 
 }
