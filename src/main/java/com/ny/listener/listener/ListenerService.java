@@ -1,9 +1,12 @@
 package com.ny.listener.listener;
 
 
+import com.ny.listener.listener.config.ExecutorConfig;
 import com.ny.listener.listener.decorator.ContextAwareExecutorDecorator;
+import com.ny.listener.listener.impl.PayPalServiceImpl;
 import com.ny.listener.listener.listener.TransactionCompletionAdapter;
 import com.ny.listener.listener.listener.TransactionCompletionManager;
+import com.ny.listener.listener.services.PaymentService;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +19,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,9 +29,10 @@ public class ListenerService {
 
     @Autowired
     HttpServletRequest request;
+
     @Autowired
-    @Qualifier("asyncTaskExecutor")
-    private Executor executor;
+    private PaymentService payPalService;
+
 
     @Transactional
     public void print(long val) {
@@ -55,29 +60,9 @@ public class ListenerService {
     public void startAsync() {
         System.out.println("started");
 
-        executor.execute(this::emptyLoop);
+        payPalService.emptyLoop();
 
-
-        //pass without request
-        //ExecutorService executorService = Executors.newSingleThreadExecutor();
-        //executorService.submit(this::emptyLoop);
-
-        //failed
-        //TransactionCompletionManager.register(TransactionCompletionAdapter.afterCommit(this::emptyLoop));
     }
 
-    @Async("contextAwareTaskExecutor")
-    public void emptyLoop() {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        for (int i = 0; i < 100; i++) {
-            System.out.println("i" + i);
-        }
 
-        System.out.println(RequestContextHolder.getRequestAttributes());
-        MDC.getCopyOfContextMap().forEach((key, value) -> System.out.println(""+key + ", val : "+ value));
-    }
 }

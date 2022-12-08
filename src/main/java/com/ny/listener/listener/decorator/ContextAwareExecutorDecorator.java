@@ -16,42 +16,38 @@ public class ContextAwareExecutorDecorator implements Executor, TaskExecutor {
 
     private final Executor executor;
 
-    public ContextAwareExecutorDecorator( Executor executor) {
+    public ContextAwareExecutorDecorator(Executor executor) {
         this.executor = executor;
     }
 
     @Override
-    public void execute( Runnable command) {
+    public void execute(Runnable command) {
         Runnable ctxAwareCommand = decorateContextAware(command);
         executor.execute(ctxAwareCommand);
     }
 
-    private Runnable decorateContextAware( Runnable command) {
-        RequestAttributes originalRequestContext = RequestContextHolder.currentRequestAttributes();
-
-        if (originalRequestContext != null) {
-            HttpServletRequest request = ((ServletRequestAttributes) originalRequestContext).getRequest();
-            copyRequestToMDC(request);
-        }
-
+    private Runnable decorateContextAware(Runnable command) {
         final Map<String, String> originalContextCopy = MDC.getCopyOfContextMap();
-        return () -> {
-            try {
-                if (originalRequestContext != null) {
-                    RequestContextHolder.setRequestAttributes(originalRequestContext);
-                }
+        Runnable ctxAwareCommand = () -> {
+            // copy the current context
+            final Map<String, String> localContextCopy = MDC.getCopyOfContextMap();
+
+            MDC.clear();
+            if (originalContextCopy != null) {
+                // set the desired context that was present at point of calling execute
                 MDC.setContextMap(originalContextCopy);
-                command.run();
-            } finally {
-                MDC.clear();
-                RequestContextHolder.resetRequestAttributes();
+            }
+
+            // execute the command
+            command.run();
+
+            MDC.clear();
+            if (localContextCopy != null) {
+                // reset the context
+                MDC.setContextMap(localContextCopy);
             }
         };
-    }
 
-    private void copyRequestToMDC( HttpServletRequest request) {
-        if (request != null) {
-            Collections.list(request.getHeaderNames()).forEach(header -> MDC.put(header, request.getHeader(header)));
-        }
+        return ctxAwareCommand;
     }
 }
