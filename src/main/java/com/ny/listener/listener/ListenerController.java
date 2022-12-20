@@ -1,6 +1,6 @@
 package com.ny.listener.listener;
 
-import com.ny.listener.listener.services.PaymentService;
+import com.ny.listener.listener.services.AsyncService;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,24 +15,18 @@ import java.util.Collections;
 
 @Controller
 @RequestMapping("/listener")
-public class ListenerCotroller {
+public class ListenerController {
 
   @Autowired
   ListenerService service;
   @Autowired
-  PaymentService paymentService;
+  AsyncService asyncService;
   @Autowired
   HttpServletRequest httpServletRequest;
 
-  @GetMapping(value = "/{val}")
+  @GetMapping(value = "/afterRollback/{val}")
   public ResponseEntity inquireCustomerAddress2(@PathVariable(value = "val") long val)  {
     service.print(val);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-
-  @GetMapping(value = "/deprecatedService")
-  public ResponseEntity depracatedService()  {
-    paymentService.pay();
     return new ResponseEntity<>(HttpStatus.OK);
   }
 

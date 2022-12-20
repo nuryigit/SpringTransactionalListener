@@ -20,7 +20,10 @@ public class TransactionCompletionAdapter {
    * TransactionPhase.BEFORE_COMMIT not supported (This phase already in transaction)
    */
   private boolean readOnlyTransactional;
-
+  /**
+   * Async operation
+   */
+  private boolean async;
   public TransactionCompletionAdapter(TransactionPhase phase, Runnable runnable) {
     this.phase = phase;
     this.runnable = runnable;
@@ -33,6 +36,11 @@ public class TransactionCompletionAdapter {
 
   public TransactionCompletionAdapter withReadOnlyTransaction() {
     this.readOnlyTransactional = true;
+    return this;
+  }
+
+  public TransactionCompletionAdapter async() {
+    this.async = true;
     return this;
   }
 
@@ -74,5 +82,13 @@ public class TransactionCompletionAdapter {
 
   public void setReadOnlyTransactional(boolean readOnlyTransactional) {
     this.readOnlyTransactional = readOnlyTransactional;
+  }
+
+  public boolean isAsync() {
+    return async;
+  }
+
+  public void setAsync(boolean async) {
+    this.async = async;
   }
 }
