@@ -14,18 +14,8 @@ public class PayPalServiceImpl implements PaymentService {
   }
 
   public void emptyLoop() {
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    for (int i = 0; i < 100; i++) {
-      System.out.println("i" + i);
-    }
 
-    System.out.println(RequestContextHolder.getRequestAttributes());
-
-
+    System.out.println("MDC------------------");
     MDC.getCopyOfContextMap().forEach((key, value) -> System.out.println(""+key + ", val : "+ value));
   }
 }

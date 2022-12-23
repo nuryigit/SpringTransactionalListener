@@ -2,13 +2,7 @@ package com.ny.listener.listener.decorator;
 
 import org.slf4j.MDC;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.concurrent.Executor;
 

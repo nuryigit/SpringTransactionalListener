@@ -14,13 +14,13 @@ public class ContextCopyingDecorator implements TaskDecorator {
     public Runnable decorate(@NonNull Runnable runnable) {
         RequestAttributes context = RequestContextHolder.currentRequestAttributes();
         Map<String, String> contextMap = MDC.getCopyOfContextMap();
+
         return () -> {
             try {
                 RequestContextHolder.setRequestAttributes(context);
                 MDC.setContextMap(contextMap);
                 runnable.run();
             } finally {
-                MDC.clear();
                 RequestContextHolder.resetRequestAttributes();
             }
         };

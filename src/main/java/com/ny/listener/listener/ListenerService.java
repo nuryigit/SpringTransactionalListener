@@ -1,28 +1,17 @@
 package com.ny.listener.listener;
 
 
-import com.ny.listener.listener.config.ExecutorConfig;
-import com.ny.listener.listener.decorator.ContextAwareExecutorDecorator;
-import com.ny.listener.listener.impl.PayPalServiceImpl;
 import com.ny.listener.listener.listener.TransactionCompletionAdapter;
 import com.ny.listener.listener.listener.TransactionCompletionManager;
 import com.ny.listener.listener.services.PaymentService;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Service
 public class ListenerService {
@@ -32,6 +21,12 @@ public class ListenerService {
 
     @Autowired
     private PaymentService payPalService;
+
+
+    @Autowired
+    @Qualifier("executorAsyncThread")
+    private TaskExecutor taskExecutor;
+
 
 
     @Transactional
@@ -60,8 +55,11 @@ public class ListenerService {
     public void startAsync() {
         System.out.println("started");
 
-        payPalService.emptyLoop();
+        //payPalService.emptyLoop();
+        //CompletableFuture.runAsync( () -> payPalService.emptyLoop(), taskExecutor);
 
+
+        TransactionCompletionManager.register(TransactionCompletionAdapter.afterCompletion(() ->payPalService.emptyLoop()).withTransaction());
     }
 
 

@@ -40,6 +40,10 @@ public class ListenerCotroller {
   public ResponseEntity testAsync()  {
     Collections.list(httpServletRequest.getHeaderNames()).forEach(header -> MDC.put(header, httpServletRequest.getHeader(header)));
     service.startAsync();
+    System.out.println("CONTROLLER");
+    MDC.getCopyOfContextMap().forEach((key, value) -> System.out.println(""+key + ", val : "+ value));
+
+    MDC.clear();
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

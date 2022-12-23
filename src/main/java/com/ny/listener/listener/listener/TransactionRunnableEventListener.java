@@ -62,16 +62,11 @@ public class TransactionRunnableEventListener {
 
   @Transactional(propagation = Propagation.REQUIRES_NEW)
   public void runWithTransaction(Runnable runnable) {
-
-    /*ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
     executor.setThreadNamePrefix("contextAwareExecutor-");
     executor.initialize();
     ContextAwareExecutorDecorator contextAwareExecutorDecorator = new ContextAwareExecutorDecorator(executor);
     contextAwareExecutorDecorator.execute(runnable);
-     */
-
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
-    executorService.submit(runnable);
   }
 
   @Transactional(readOnly = true)
