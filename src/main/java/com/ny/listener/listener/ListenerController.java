@@ -1,5 +1,6 @@
 package com.ny.listener.listener;
 
+import com.ny.listener.listener.impl.ListenerService;
 import com.ny.listener.listener.services.AsyncService;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +21,8 @@ public class ListenerController {
   @Autowired
   ListenerService service;
   @Autowired
-  AsyncService asyncService;
-  @Autowired
   HttpServletRequest httpServletRequest;
 
-  @GetMapping(value = "/afterRollback/{val}")
-  public ResponseEntity inquireCustomerAddress2(@PathVariable(value = "val") long val)  {
-    service.print(val);
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
 
   @GetMapping(value = "/testAsync")
   public ResponseEntity testAsync()  {

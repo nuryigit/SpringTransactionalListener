@@ -6,6 +6,4 @@ public interface AsyncService {
 
   @Async
   void logContextAsync();
-
-  void rollback();
 }
