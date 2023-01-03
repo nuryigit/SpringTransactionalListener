@@ -9,6 +9,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 @Service
 public class AsyncServiceImpl implements AsyncService {
 
@@ -22,7 +24,8 @@ public class AsyncServiceImpl implements AsyncService {
         }
 
         logger.info("RequestContext: {}", RequestContextHolder.getRequestAttributes());
-        MDC.getCopyOfContextMap().forEach((key, value) -> logger.info("RequestContext from MDC {}, val : {}", key, value));
+        Arrays.stream(RequestContextHolder.getRequestAttributes().getAttributeNames(0))
+                        .forEach(it -> System.out.println(it +":" + RequestContextHolder.getRequestAttributes().getAttribute(it, 0)));
     }
 
     public void rollback() {

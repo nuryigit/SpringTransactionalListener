@@ -6,12 +6,15 @@ import com.ny.listener.listener.listener.TransactionCompletionManager;
 import com.ny.listener.listener.services.AsyncService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 @Service
@@ -26,9 +29,6 @@ public class ListenerService {
     @Autowired
     TransactionCompletionManager transactionCompletionManager;
 
-    @Autowired
-    @Qualifier("asyncTaskExecutor")
-    Executor executorService;
 
     @Transactional
     public void print(long val) {
@@ -45,8 +45,14 @@ public class ListenerService {
     @Transactional
     public void startAsync() {
         logger.info("service called");
-        executorService.execute(() -> asyncService.logContextAsync());
+
+        setContext(1);
+
+        asyncService.logContextAsync();
     }
 
-
+    private void setContext(int value) {
+        MDC.put("count", String.valueOf(value));
+        MDC.put("callerThreadId", String.valueOf(Thread.currentThread().getId()));
+    }
 }
